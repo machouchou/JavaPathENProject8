@@ -1,7 +1,7 @@
 package tourGuide.service;
 
+import java.util.ArrayList;
 import java.util.List;
-
 import org.springframework.stereotype.Service;
 
 import gpsUtil.GpsUtil;
@@ -55,7 +55,7 @@ public class RewardsService {
 		return getDistance(attraction, location) > attractionProximityRange ? false : true;
 	}
 	
-	private boolean nearAttraction(VisitedLocation visitedLocation, Attraction attraction) {
+	public boolean nearAttraction(VisitedLocation visitedLocation, Attraction attraction) {
 		return getDistance(attraction, visitedLocation.location) > proximityBuffer ? false : true;
 	}
 	
@@ -63,6 +63,17 @@ public class RewardsService {
 		return rewardsCentral.getAttractionRewardPoints(attraction.attractionId, user.getUserId());
 	}
 	
+	/*public Location getDistanceBetweenUserAndAttraction(User user, Attraction attract) {
+		List<Attraction> attractions = gpsUtil.getAttractions();
+		List <VisitedLocation> locations = new ArrayList<>(); 
+		VisitedLocation lastLocation = user.getLastVisitedLocation();
+		for (Attraction attraction : attractions) {
+			Location location = getDistance(lastLocation, attraction);
+			locations.add(lastLocation);
+			return 
+			
+		}
+	}*/
 	public double getDistance(Location loc1, Location loc2) {
         double lat1 = Math.toRadians(loc1.latitude);
         double lon1 = Math.toRadians(loc1.longitude);

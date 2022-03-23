@@ -93,13 +93,17 @@ public class TourGuideService {
 	public List<Attraction> getNearByAttractions(VisitedLocation visitedLocation) {
 		List<Attraction> nearbyAttractions = new ArrayList<>();
 		for(Attraction attraction : gpsUtil.getAttractions()) {
-			if(rewardsService.isWithinAttractionProximity(attraction, visitedLocation.location)) {
+			if(rewardsService.nearAttraction(visitedLocation,attraction)) {
 				nearbyAttractions.add(attraction);
+				if(nearbyAttractions.size()==5) {
+					break;
+				}
 			}
 		}
 		
 		return nearbyAttractions;
 	}
+
 	
 	private void addShutDownHook() {
 		Runtime.getRuntime().addShutdownHook(new Thread() { 
