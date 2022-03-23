@@ -65,11 +65,11 @@ public class RewardsService {
 	
 	/*public Location getDistanceBetweenUserAndAttraction(User user, Attraction attract) {
 		List<Attraction> attractions = gpsUtil.getAttractions();
-		List <VisitedLocation> locations = new ArrayList<>(); 
+		List <Double> distances = new ArrayList<>(); 
 		VisitedLocation lastLocation = user.getLastVisitedLocation();
 		for (Attraction attraction : attractions) {
-			Location location = getDistance(lastLocation, attraction);
-			locations.add(lastLocation);
+			Double distance = getDistance(lastLocation.location, attraction);
+			distances.add(distance);
 			return 
 			
 		}
