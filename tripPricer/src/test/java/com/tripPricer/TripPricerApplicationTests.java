@@ -1,14 +1,14 @@
 package com.tripPricer;
 
-import org.junit.jupiter.api.Test;
-
+import org.junit.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 
 @SpringBootTest
-class TripPricerApplicationTests {
+public class TripPricerApplicationTests {
 
 	@Test
-	void contextLoads() {
+	public void contextLoads() {
+		System.out.println("pour test");
 	}
 
 }

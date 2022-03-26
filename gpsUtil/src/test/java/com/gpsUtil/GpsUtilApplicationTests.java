@@ -1,13 +1,13 @@
 package com.gpsUtil;
 
-import org.junit.jupiter.api.Test;
+import org.junit.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 
 @SpringBootTest
-class GpsUtilApplicationTests {
+public class GpsUtilApplicationTests {
 
 	@Test
-	void contextLoads() {
+	public void contextLoads() {
 	}
 
 }

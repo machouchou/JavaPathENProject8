@@ -10,6 +10,7 @@ public class UserPreferenceDto {
 	private int numberOfChildren;
 	private int tripDuration;
 	private int cumulatativeRewardPoints;
+	
 	public String getTripPricerApiKey() {
 		return tripPricerApiKey;
 	}

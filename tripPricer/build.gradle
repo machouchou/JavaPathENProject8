@@ -40,10 +40,9 @@ dependencies {
     compile(name:'RewardCentral', ext:'jar')
     compile(name:'TripPricer', ext:'jar')
     
-    testCompile("org.junit.vintage:junit-vintage-engine:5.8.1")
+    testCompile("junit:junit")
     testCompile group: 'org.springframework.boot', name: 'spring-boot-starter-test', version: '2.1.6.RELEASE'
 }
-
 
 jacoco {
     toolVersion = "0.8.4"
