@@ -1,6 +1,5 @@
 package com.gpsUtil.service;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
@@ -16,20 +15,20 @@ import gpsUtil.location.VisitedLocation;
 public class GpsUtilService {
 	
 	private Logger logger = LoggerFactory.getLogger(GpsUtilService.class);
-	private final GpsUtil gpsUtil = new GpsUtil();
+	private GpsUtil gpsUtil = new GpsUtil();
 	
 	public List<Attraction> getAttractions() {
 
-        logger.debug("Attractions received!");
+        logger.debug("Attractions got!");
 
         return gpsUtil.getAttractions();
     }
 
-    public VisitedLocation getUserLocation(UUID userUuid) {
+    public VisitedLocation getUserLocation(UUID userId) {
 
-        logger.debug("User's location received!");
+        logger.debug("User's location get!");
 
-        VisitedLocation visitedLocation = gpsUtil.getUserLocation(userUuid);
+        VisitedLocation visitedLocation = gpsUtil.getUserLocation(userId);
 
         return visitedLocation;
     }

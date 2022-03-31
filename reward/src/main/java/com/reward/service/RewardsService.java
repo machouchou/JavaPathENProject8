@@ -1,13 +1,17 @@
 package com.reward.service;
 
 import java.util.UUID;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import rewardCentral.RewardCentral;
 
 @Service
 public class RewardsService {
-    private static final double STATUTE_MILES_PER_NAUTICAL_MILE = 1.15077945;
+	
+	private Logger logger = LoggerFactory.getLogger(RewardsService.class);
 
 	private final RewardCentral rewardsCentral;
 	

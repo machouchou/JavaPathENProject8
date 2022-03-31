@@ -20,6 +20,7 @@ import gpsUtil.GpsUtil;
 import gpsUtil.location.Attraction;
 import gpsUtil.location.Location;
 import gpsUtil.location.VisitedLocation;
+import tourGuide.TourGuideProxy;
 import tourGuide.helper.InternalTestHelper;
 import tourGuide.tracker.Tracker;
 import tourGuide.user.User;
@@ -36,9 +37,12 @@ public class TourGuideService {
 	public final Tracker tracker;
 	boolean testMode = true;
 	
-	public TourGuideService(GpsUtil gpsUtil, RewardsService rewardsService) {
+	private final TourGuideProxy tourGuideProxy;
+	
+	public TourGuideService(GpsUtil gpsUtil, RewardsService rewardsService, TourGuideProxy tourGuideProxy  ) {
 		this.gpsUtil = gpsUtil;
 		this.rewardsService = rewardsService;
+		this.tourGuideProxy = tourGuideProxy;
 		
 		if(testMode) {
 			logger.info("TestMode enabled");

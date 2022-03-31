@@ -1,4 +1,4 @@
-package com.reward.test;
+package com.gpsUtil.test;
 
 import java.util.UUID;
 import org.junit.Test;
@@ -16,13 +16,13 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.reward.RewardApplication;
+import com.gpsUtil.GpsUtilApplication;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 
 @RunWith(SpringRunner.class)
-@SpringBootTest(webEnvironment = WebEnvironment.RANDOM_PORT, classes = RewardApplication.class)
+@SpringBootTest(webEnvironment = WebEnvironment.RANDOM_PORT, classes = GpsUtilApplication.class)
 @AutoConfigureMockMvc
-public class RewardControllerTest {
+public class GpsUtilControllerTest {
 	
 	@Autowired
     MockMvc mockMvc;
@@ -32,16 +32,12 @@ public class RewardControllerTest {
 
 	
 	@Test
-	public void getAttractionRewardPoints() throws Exception {
+	public void getAttractions() throws Exception {
 		
-		UUID attractionId = UUID.randomUUID();
-		UUID userId = UUID.randomUUID();
-
-		MockHttpServletRequestBuilder mockRequest = MockMvcRequestBuilders.get("/attractionRewardPoints")
+		
+		MockHttpServletRequestBuilder mockRequest = MockMvcRequestBuilders.get("/attractions")
 		.contentType(MediaType.APPLICATION_JSON)
 		.accept(MediaType.APPLICATION_JSON) 
-		.param("attractionId", attractionId.toString())
-        .param("userId", userId.toString());
 		MvcResult result = mockMvc
 		.perform(mockRequest)
         .andExpect(status().isOk())

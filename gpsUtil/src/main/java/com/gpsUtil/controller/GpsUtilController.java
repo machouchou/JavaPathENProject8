@@ -30,10 +30,10 @@ public class GpsUtilController {
     }
 
     @GetMapping(value="/userLocation")
-    public VisitedLocation getUserLocation (@RequestParam UUID userUuid) {
+    public VisitedLocation getUserLocation (@RequestParam UUID userId) {
 
-        logger.debug("USER UUID: " + userUuid);
-        return gpsUtilService.getUserLocation(userUuid);
+        logger.debug("USER UUID: " + userId);
+        return gpsUtilService.getUserLocation(userId);
     }
 
 }

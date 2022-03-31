@@ -1,7 +1,12 @@
 package tourGuide.service;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
+import java.util.UUID;
+import java.util.stream.Collectors;
+
 import org.springframework.stereotype.Service;
 
 import gpsUtil.GpsUtil;
@@ -9,6 +14,8 @@ import gpsUtil.location.Attraction;
 import gpsUtil.location.Location;
 import gpsUtil.location.VisitedLocation;
 import rewardCentral.RewardCentral;
+import tourGuide.TourGuideProxy;
+import tourGuide.user.Position;
 import tourGuide.user.User;
 import tourGuide.user.UserReward;
 
@@ -21,11 +28,11 @@ public class RewardsService {
 	private int proximityBuffer = defaultProximityBuffer;
 	private int attractionProximityRange = 200;
 	private final GpsUtil gpsUtil;
-	private final RewardCentral rewardsCentral;
+	private final TourGuideProxy tourGuideProxy;
 	
-	public RewardsService(GpsUtil gpsUtil, RewardCentral rewardCentral) {
-		this.gpsUtil = gpsUtil;
-		this.rewardsCentral = rewardCentral;
+	public RewardsService(TourGuideProxy tourGuideProxy) {
+		this.gpsUtil = new GpsUtil();
+		this.tourGuideProxy = tourGuideProxy;
 	}
 	
 	public void setProximityBuffer(int proximityBuffer) {
@@ -60,20 +67,30 @@ public class RewardsService {
 	}
 	
 	private int getRewardPoints(Attraction attraction, User user) {
-		return rewardsCentral.getAttractionRewardPoints(attraction.attractionId, user.getUserId());
+		return tourGuideProxy.getAttractionRewardPoints(attraction.attractionId, user.getUserId());
 	}
 	
-	/*public Location getDistanceBetweenUserAndAttraction(User user) {
+	public List<Position> getDistanceBetweenUserAndAttraction(User user) {
 		List<Attraction> attractions = gpsUtil.getAttractions();
-		List <Double> distances = new ArrayList<>(); 
+		List <Position> attractionPositionsFromUser = new ArrayList<>();  
 		VisitedLocation lastLocation = user.getLastVisitedLocation();
+		
 		for (Attraction attraction : attractions) {
 			Double distance = getDistance(lastLocation.location, attraction);
-			distances.add(distance);
-			return 
-			
+			//distances.add(distance);
+			Position attractionPositionFromUser = new Position();
+			attractionPositionFromUser.setAttraction(attraction);
+			attractionPositionFromUser.setDistanceFromUser(distance);
+			attractionPositionsFromUser.add(attractionPositionFromUser);
 		}
-	}*/
+			Collections.sort(attractionPositionsFromUser, new Comparator<Position>(){
+		    public int compare(Position P1, Position P2) {
+		        return P1.getDistanceFromUser().compareTo(P2.getDistanceFromUser());
+		    }
+		}); 
+			return attractionPositionsFromUser.stream().limit(5).collect(Collectors.toList());
+	}
+	
 	public double getDistance(Location loc1, Location loc2) {
         double lat1 = Math.toRadians(loc1.latitude);
         double lon1 = Math.toRadians(loc1.longitude);
