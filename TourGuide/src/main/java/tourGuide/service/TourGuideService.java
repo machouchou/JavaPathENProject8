@@ -9,6 +9,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Random;
 import java.util.UUID;
+import java.util.concurrent.ExecutionException;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
@@ -16,33 +17,36 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
-import gpsUtil.GpsUtil;
-import gpsUtil.location.Attraction;
-import gpsUtil.location.Location;
-import gpsUtil.location.VisitedLocation;
-import tourGuide.TourGuideProxy;
+import tourGuide.GpsUtilProxy;
+import tourGuide.RewardProxy;
+import tourGuide.TripPricerProxy;
+import tourGuide.dto.UserPreferenceDto;
+import tourGuide.exception.UserPreferenceException;
 import tourGuide.helper.InternalTestHelper;
+import tourGuide.response.rest.Attraction;
+import tourGuide.response.rest.Location;
+import tourGuide.response.rest.Provider;
+import tourGuide.response.rest.VisitedLocation;
 import tourGuide.tracker.Tracker;
 import tourGuide.user.User;
 import tourGuide.user.UserReward;
-import tripPricer.Provider;
-import tripPricer.TripPricer;
 
 @Service
 public class TourGuideService {
 	private Logger logger = LoggerFactory.getLogger(TourGuideService.class);
-	private final GpsUtil gpsUtil;
 	private final RewardsService rewardsService;
-	private final TripPricer tripPricer = new TripPricer();
 	public final Tracker tracker;
 	boolean testMode = true;
 	
-	private final TourGuideProxy tourGuideProxy;
+	private final GpsUtilProxy gpsUtilProxy;
+	private final RewardProxy rewardProxy;
+	private final TripPricerProxy tripPricerProxy;
 	
-	public TourGuideService(GpsUtil gpsUtil, RewardsService rewardsService, TourGuideProxy tourGuideProxy  ) {
-		this.gpsUtil = gpsUtil;
+	public TourGuideService(GpsUtilProxy gpsUtilProxy, RewardsService rewardsService, RewardProxy rewardProxy, TripPricerProxy tripPricerProxy  ) {
+		this.gpsUtilProxy = gpsUtilProxy;
 		this.rewardsService = rewardsService;
-		this.tourGuideProxy = tourGuideProxy;
+		this.rewardProxy = rewardProxy;
+		this.tripPricerProxy = tripPricerProxy;
 		
 		if(testMode) {
 			logger.info("TestMode enabled");
@@ -50,7 +54,7 @@ public class TourGuideService {
 			initializeInternalUsers();
 			logger.debug("Finished initializing users");
 		}
-		tracker = new Tracker(this);
+		tracker = new Tracker(gpsUtilProxy, this);
 		addShutDownHook();
 	}
 	
@@ -58,7 +62,8 @@ public class TourGuideService {
 		return user.getUserRewards();
 	}
 	
-	public VisitedLocation getUserLocation(User user) {
+	public VisitedLocation getUserLocation(User user) 
+			throws ExecutionException, InterruptedException {
 		VisitedLocation visitedLocation = (user.getVisitedLocations().size() > 0) ?
 			user.getLastVisitedLocation() :
 			trackUserLocation(user);
@@ -69,6 +74,23 @@ public class TourGuideService {
 		return internalUserMap.get(userName);
 	}
 	
+	public User upDateUserPreferences(UserPreferenceDto  userPreferenceDto) throws UserPreferenceException {
+		 User user =internalUserMap.get(userPreferenceDto.getUserName());
+		if (user.getUserPreferences() != null) {
+			user.getUserPreferences().setTripDuration(userPreferenceDto.getTripDuration());
+			user.getUserPreferences().setTicketQuantity(userPreferenceDto.getTicketQuantity());
+			user.getUserPreferences().setNumberOfChildren(userPreferenceDto.getNumberOfChildren());
+			user.getUserPreferences().setNumberOfAdults(userPreferenceDto.getNumberOfAdults());
+			return user;
+		}
+		throw new UserPreferenceException("preference not found for this user");
+	}
+	
+	
+	public Map<String, User> getInternalUserMap() {
+		return internalUserMap;
+	}
+
 	public List<User> getAllUsers() {
 		return internalUserMap.values().stream().collect(Collectors.toList());
 	}
@@ -81,14 +103,14 @@ public class TourGuideService {
 	
 	public List<Provider> getTripDeals(User user) {
 		int cumulatativeRewardPoints = user.getUserRewards().stream().mapToInt(i -> i.getRewardPoints()).sum();
-		List<Provider> providers = tripPricer.getPrice(tripPricerApiKey, user.getUserId(), user.getUserPreferences().getNumberOfAdults(), 
+		List<Provider> providers = tripPricerProxy.getPrice(tripPricerApiKey, user.getUserId(), user.getUserPreferences().getNumberOfAdults(), 
 				user.getUserPreferences().getNumberOfChildren(), user.getUserPreferences().getTripDuration(), cumulatativeRewardPoints);
 		user.setTripDeals(providers);
 		return providers;
 	}
 	
 	public VisitedLocation trackUserLocation(User user) {
-		VisitedLocation visitedLocation = gpsUtil.getUserLocation(user.getUserId());
+		VisitedLocation visitedLocation = gpsUtilProxy.getUserLocation(user.getUserId());
 		user.addToVisitedLocations(visitedLocation);
 		rewardsService.calculateRewards(user);
 		return visitedLocation;
@@ -96,8 +118,9 @@ public class TourGuideService {
 
 	public List<Attraction> getNearByAttractions(VisitedLocation visitedLocation) {
 		List<Attraction> nearbyAttractions = new ArrayList<>();
-		for(Attraction attraction : gpsUtil.getAttractions()) {
+		for(Attraction attraction : gpsUtilProxy.getAttractions()) {
 			if(rewardsService.nearAttraction(visitedLocation,attraction)) {
+				
 				nearbyAttractions.add(attraction);
 				if(nearbyAttractions.size()==5) {
 					break;
@@ -128,6 +151,7 @@ public class TourGuideService {
 	private void initializeInternalUsers() {
 		IntStream.range(0, InternalTestHelper.getInternalUserNumber()).forEach(i -> {
 			String userName = "internalUser" + i;
+			//System.out.println(userName);
 			String phone = "000";
 			String email = userName + "@tourGuide.com";
 			User user = new User(UUID.randomUUID(), userName, phone, email);
@@ -140,7 +164,11 @@ public class TourGuideService {
 	
 	private void generateUserLocationHistory(User user) {
 		IntStream.range(0, 3).forEach(i-> {
-			user.addToVisitedLocations(new VisitedLocation(user.getUserId(), new Location(generateRandomLatitude(), generateRandomLongitude()), getRandomTime()));
+			VisitedLocation visitedLocation = new VisitedLocation();
+			visitedLocation.setUserId(user.getUserId());
+			visitedLocation.setLocation(new Location(generateRandomLatitude(), generateRandomLongitude()));
+			visitedLocation.setTimeVisited(getRandomTime());
+			user.addToVisitedLocations(visitedLocation);
 		});
 	}
 	

@@ -13,15 +13,15 @@ public class RewardsService {
 	
 	private Logger logger = LoggerFactory.getLogger(RewardsService.class);
 
-	private final RewardCentral rewardsCentral;
+	private final RewardCentral rewardCentral;
 	
 	public RewardsService(RewardCentral rewardCentral) {
-		this.rewardsCentral = rewardCentral;
+		this.rewardCentral = rewardCentral;
 
 	}
 	
 	public int getAttractionRewardPoints(UUID attractionId, UUID userId) {
-		return this.rewardsCentral.getAttractionRewardPoints(attractionId, userId);
+		return this.rewardCentral.getAttractionRewardPoints(attractionId, userId);
 	    
 	  }
 	

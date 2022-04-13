@@ -12,13 +12,12 @@ import java.util.concurrent.Executors;
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
-import gpsUtil.GpsUtil;
-import gpsUtil.location.Attraction;
-import gpsUtil.location.VisitedLocation;
-import rewardCentral.RewardCentral;
 import tourGuide.helper.InternalTestHelper;
+import tourGuide.response.rest.Attraction;
+import tourGuide.response.rest.VisitedLocation;
 import tourGuide.service.RewardsService;
 import tourGuide.service.TourGuideService;
 import tourGuide.user.User;
@@ -27,6 +26,13 @@ import tourGuide.user.UserReward;
 @SpringBootTest
 public class TestRewardsService {
 	
+	@Autowired
+	GpsUtilProxy gpsUtilProxy;
+	@Autowired
+	RewardProxy rewardProxy;
+	@Autowired
+	TripPricerProxy tripPricerProxy;
+	
 //Executor executor;
 	
 	@Before
@@ -34,24 +40,27 @@ public class TestRewardsService {
 	   // executor = Executors.newFixedThreadPool(100);
 	    Locale.setDefault(new Locale("en", "US", "WIN"));
 	}
-/*
+
 	@Test
 	public void userGetRewards() {
-		GpsUtil gpsUtil = new GpsUtil();
-		RewardsService rewardsService = new RewardsService(gpsUtil, new RewardCentral());
+		RewardsService rewardsService = new RewardsService(gpsUtilProxy, rewardProxy);
 
-		InternalTestHelper.setInternalUserNumber(0);
-		TourGuideService tourGuideService = new TourGuideService(gpsUtil, rewardsService);
+		InternalTestHelper.setInternalUserNumber(1);
+		TourGuideService tourGuideService = new TourGuideService(gpsUtilProxy, rewardsService, rewardProxy, tripPricerProxy);
 		
 		User user = new User(UUID.randomUUID(), "jon", "000", "jon@tourGuide.com");
-		Attraction attraction = gpsUtil.getAttractions().get(0);
-		user.addToVisitedLocations(new VisitedLocation(user.getUserId(), attraction, new Date()));
+		Attraction attraction = gpsUtilProxy.getAttractions().get(0);
+		VisitedLocation visitedLocation = new VisitedLocation();
+		visitedLocation.setUserId(user.getUserId());
+		visitedLocation.setLocation(attraction);
+		visitedLocation.setTimeVisited(new Date());
+		user.addToVisitedLocations(visitedLocation);
 		tourGuideService.trackUserLocation(user);
 		List<UserReward> userRewards = user.getUserRewards();
 		tourGuideService.tracker.stopTracking();
 		assertTrue(userRewards.size() == 1);
 	}
-	
+	/*
 	@Test
 	public void isWithinAttractionProximity() {
 		GpsUtil gpsUtil = new GpsUtil();
@@ -75,6 +84,6 @@ public class TestRewardsService {
 		tourGuideService.tracker.stopTracking();
 
 		assertEquals(gpsUtil.getAttractions().size(), userRewards.size());
-	}*/
-	
+	}
+	*/
 }

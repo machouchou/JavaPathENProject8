@@ -1,12 +1,13 @@
 package tourGuide.user;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 import java.util.UUID;
 
-import gpsUtil.location.VisitedLocation;
-import tripPricer.Provider;
+import tourGuide.response.rest.Provider;
+import tourGuide.response.rest.VisitedLocation;
 
 public class User {
 	private final UUID userId;
@@ -18,6 +19,7 @@ public class User {
 	private List<UserReward> userRewards = new ArrayList<>();
 	private UserPreferences userPreferences = new UserPreferences();
 	private List<Provider> tripDeals = new ArrayList<>();
+	
 	public User(UUID userId, String userName, String phoneNumber, String emailAddress) {
 		this.userId = userId;
 		this.userName = userName;
@@ -88,6 +90,9 @@ public class User {
 	}
 
 	public VisitedLocation getLastVisitedLocation() {
+		if (visitedLocations.isEmpty()) {
+			return null;
+		}
 		return visitedLocations.get(visitedLocations.size() - 1);
 	}
 	

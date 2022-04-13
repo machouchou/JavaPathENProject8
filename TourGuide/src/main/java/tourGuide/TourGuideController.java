@@ -1,18 +1,26 @@
 package tourGuide;
 
 import java.util.List;
+import java.util.concurrent.ExecutionException;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.jsoniter.output.JsonStream;
 
-import gpsUtil.location.VisitedLocation;
+import tourGuide.dto.UserFiveNearAttracDto;
+import tourGuide.dto.UserPreferenceDto;
+import tourGuide.exception.UserPreferenceException;
+import tourGuide.response.rest.Provider;
+import tourGuide.response.rest.VisitedLocation;
+import tourGuide.service.RewardsService;
 import tourGuide.service.TourGuideService;
 import tourGuide.user.User;
-import tripPricer.Provider;
 
 @RestController
 public class TourGuideController {
@@ -20,15 +28,18 @@ public class TourGuideController {
 	@Autowired
 	TourGuideService tourGuideService;
 	
+	@Autowired
+	RewardsService rewardsService;
+	
     @RequestMapping("/")
     public String index() {
         return "Greetings from TourGuide!";
     }
     
     @RequestMapping("/getLocation") 
-    public String getLocation(@RequestParam String userName) {
+    public String getLocation(@RequestParam String userName) throws ExecutionException, InterruptedException {
     	VisitedLocation visitedLocation = tourGuideService.getUserLocation(getUser(userName));
-		return JsonStream.serialize(visitedLocation.location);
+		return JsonStream.serialize(visitedLocation.getLocation());
     }
     
     //  TODO: Change this method to no longer return a List of Attractions.
@@ -41,9 +52,25 @@ public class TourGuideController {
         // The reward points for visiting each Attraction.
         //    Note: Attraction reward points can be gathered from RewardsCentral
     @RequestMapping("/getNearbyAttractions") 
-    public String getNearbyAttractions(@RequestParam String userName) {
+    public String getNearbyAttractions(@RequestParam String userName) throws ExecutionException, InterruptedException {
     	VisitedLocation visitedLocation = tourGuideService.getUserLocation(getUser(userName));
     	return JsonStream.serialize(tourGuideService.getNearByAttractions(visitedLocation));
+    }
+    
+    @RequestMapping("/fiveNearbyAttractions") 
+    public String getFiveNearbyAttractions(@RequestParam String userName) throws ExecutionException, InterruptedException {
+    	//VisitedLocation visitedLocation = tourGuideService.getUserLocation(getUser(userName));
+    	User user = tourGuideService.getInternalUserMap().get(userName);
+      	return JsonStream.serialize(rewardsService.getFiveNearAttractions(user));
+    }
+    
+    
+    @GetMapping("/getFiveAttractions") 
+    public String getFiveAttractions(@RequestParam String userName) throws ExecutionException, InterruptedException {
+    	//VisitedLocation visitedLocation = tourGuideService.getUserLocation(getUser(userName));
+    	//User user = new User(UUID.randomUUID(), "internalUser1", "111", "user1@TG.com");
+    	User user = tourGuideService.getInternalUserMap().get(userName);
+    	return JsonStream.serialize(rewardsService.getDistanceBetweenUserAndAttraction(user));
     }
     
     @RequestMapping("/getRewards") 
@@ -72,9 +99,20 @@ public class TourGuideController {
     	return JsonStream.serialize(providers);
     }
     
-    private User getUser(String userName) {
+    @RequestMapping("/getUser")
+    public User getUser(@RequestParam String userName) {
     	return tourGuideService.getUser(userName);
     }
    
+    @RequestMapping(method = RequestMethod. POST, path = "/userPreferences")
+    public User getUserPreferences(@RequestBody UserPreferenceDto userPreferenceDto) {
+    	try {
+			User user = tourGuideService.upDateUserPreferences(userPreferenceDto);
+			return user;
+		} catch (UserPreferenceException e) {
+			
+			return null;
+		}
+    }
 
 }

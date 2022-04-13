@@ -30,7 +30,6 @@ public class RewardControllerTest {
 	@Autowired
     ObjectMapper mapper;
 
-	
 	@Test
 	public void getAttractionRewardPoints() throws Exception {
 		
@@ -53,9 +52,6 @@ public class RewardControllerTest {
 
         //.andExpect(jsonPath("$", hasSize(greaterThanOrEqualTo(1))));
 
-
-		
-			}
+	}
 	
-
 }

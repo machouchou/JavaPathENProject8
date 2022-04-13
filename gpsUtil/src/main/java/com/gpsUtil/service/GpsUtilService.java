@@ -15,7 +15,13 @@ import gpsUtil.location.VisitedLocation;
 public class GpsUtilService {
 	
 	private Logger logger = LoggerFactory.getLogger(GpsUtilService.class);
-	private GpsUtil gpsUtil = new GpsUtil();
+	
+	private GpsUtil gpsUtil;
+	
+	public GpsUtilService(GpsUtil gpsUtil) {
+		this.gpsUtil = gpsUtil;
+
+	}
 	
 	public List<Attraction> getAttractions() {
 

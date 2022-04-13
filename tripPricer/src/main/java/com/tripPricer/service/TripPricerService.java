@@ -14,7 +14,13 @@ import tripPricer.TripPricer;
 public class TripPricerService {
 	
 	private Logger logger = LoggerFactory.getLogger(TripPricerService.class);
-	private final TripPricer tripPricer = new TripPricer();
+	
+	private final TripPricer tripPricer;
+	
+	public TripPricerService(TripPricer tripPricer) {
+		this.tripPricer = tripPricer;
+
+	}
 	
 	public List<Provider> getPrice(String apiKey, UUID attractionId, 
 									int adults, int children, 
@@ -23,6 +29,11 @@ public class TripPricerService {
 		logger.debug("Trip Pricer Service");
 		
 	    return this.tripPricer.getPrice(apiKey, UUID.randomUUID(), adults, children, nightsStay, rewardsPoints);
+	}
+	
+	public String getProviderName(String apiKey, int adults) {
+		logger.debug("Trip Pricer Service");
+		return this.tripPricer.getProviderName(apiKey, adults);
 	}
 	    
 }

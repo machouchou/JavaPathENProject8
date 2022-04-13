@@ -2,25 +2,42 @@
 
 import static org.junit.Assert.assertTrue;
 
-import java.util.*;
-import java.util.concurrent.*;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+import java.util.Locale;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.Executor;
+import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
 
 import org.apache.commons.lang3.time.StopWatch;
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.junit4.SpringRunner;
 
-import gpsUtil.GpsUtil;
-import gpsUtil.location.Attraction;
-import gpsUtil.location.VisitedLocation;
-import rewardCentral.RewardCentral;
 import tourGuide.helper.InternalTestHelper;
+import tourGuide.response.rest.Attraction;
+import tourGuide.response.rest.VisitedLocation;
 import tourGuide.service.RewardsService;
 import tourGuide.service.TourGuideService;
 import tourGuide.user.User;
 
-@SpringBootTest
+@RunWith(SpringRunner.class)
+@SpringBootTest(classes = Application.class)
 public class TestPerformance {
+	
+	@Autowired
+	GpsUtilProxy gpsUtilProxy;
+	@Autowired
+	RewardProxy rewardProxy;
+	@Autowired
+	TripPricerProxy tripPricerProxy;
+	
 	 List<Attraction> attractions = new ArrayList();
 	Executor executor;
 	
@@ -77,15 +94,14 @@ public class TestPerformance {
 	 *          assertTrue(TimeUnit.MINUTES.toSeconds(20) >= TimeUnit.MILLISECONDS.toSeconds(stopWatch.getTime()));
 	 */
 	
-/*
+	
 	@Test
 	public void highVolumeTrackLocation() throws ExecutionException, InterruptedException {
 		//Locale.setDefault(new Locale("en", "US", "WIN"));
-		GpsUtil gpsUtil = new GpsUtil();
-		RewardsService rewardsService = new RewardsService(gpsUtil, new RewardCentral());
+		RewardsService rewardsService = new RewardsService(gpsUtilProxy, rewardProxy);
 		// Users should be incremented up to 100,000, and test finishes within 15 minutes
 		InternalTestHelper.setInternalUserNumber(100000);
-		TourGuideService tourGuideService = new TourGuideService(gpsUtil, rewardsService);
+		TourGuideService tourGuideService = new TourGuideService(gpsUtilProxy, rewardsService, rewardProxy, tripPricerProxy);
 
 		List<User> allUsers = new ArrayList<>();
 		List<CompletableFuture> lCompletable = new ArrayList<>();
@@ -112,20 +128,26 @@ public class TestPerformance {
 	@Test
 	public void highVolumeGetRewards() throws ExecutionException, InterruptedException {
 		Locale.setDefault(new Locale("en", "US", "WIN"));
-		GpsUtil gpsUtil = new GpsUtil();
-		RewardsService rewardsService = new RewardsService(gpsUtil, new RewardCentral());
+		//GpsUtilProxy gpsUtil = new GpsUtilProxy();
+		RewardsService rewardsService = new RewardsService(gpsUtilProxy, rewardProxy);
 
 		// Users should be incremented up to 100,000, and test finishes within 20 minutes
 		InternalTestHelper.setInternalUserNumber(100000);
 		StopWatch stopWatch = new StopWatch();
 		stopWatch.start();
-		TourGuideService tourGuideService = new TourGuideService(gpsUtil, rewardsService);
+		TourGuideService tourGuideService = new TourGuideService(gpsUtilProxy, rewardsService, rewardProxy, tripPricerProxy);
 		
-	    Attraction attraction = gpsUtil.getAttractions().get(0);
+	    Attraction attraction = gpsUtilProxy.getAttractions().get(0);
 		List<User> allUsers = new ArrayList<>();
 		List<CompletableFuture> lCompletable = new ArrayList<>();
 		allUsers = tourGuideService.getAllUsers();
-		allUsers.forEach(u -> u.addToVisitedLocations(new VisitedLocation(u.getUserId(), attraction, new Date())));
+		allUsers.forEach(u -> {
+			VisitedLocation visitedLocation = new VisitedLocation();
+			visitedLocation.setUserId(u.getUserId());
+			visitedLocation.setLocation(attraction);
+			visitedLocation.setTimeVisited(new Date());
+		u.addToVisitedLocations(visitedLocation);
+		}); //new VisitedLocation(u.getUserId(), attraction, new Date())));}
 	     
 	    allUsers.forEach(u -> {
 	    	CompletableFuture completable = CompletableFuture.runAsync(
@@ -145,6 +167,6 @@ public class TestPerformance {
 
 		System.out.println("highVolumeGetRewards: Time Elapsed: " + TimeUnit.MILLISECONDS.toSeconds(stopWatch.getTime()) + " seconds."); 
 		assertTrue(TimeUnit.MINUTES.toSeconds(20) >= TimeUnit.MILLISECONDS.toSeconds(stopWatch.getTime()));
-	}*/
+	}
 	
 }

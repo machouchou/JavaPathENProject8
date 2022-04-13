@@ -1,29 +1,16 @@
 package tourGuide;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
-import java.util.UUID;
 import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
 
 import org.junit.Before;
-import org.junit.Test;
 //import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 
-import gpsUtil.GpsUtil;
-import gpsUtil.location.Attraction;
-import gpsUtil.location.VisitedLocation;
-import rewardCentral.RewardCentral;
-import tourGuide.helper.InternalTestHelper;
-import tourGuide.service.RewardsService;
-import tourGuide.service.TourGuideService;
-import tourGuide.user.User;
-import tripPricer.Provider;
+import tourGuide.response.rest.Attraction;
 
 @SpringBootTest
 public class TestTourGuideService {

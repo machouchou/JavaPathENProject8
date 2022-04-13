@@ -1,13 +1,19 @@
 package tourGuide.user;
 
-import java.util.UUID;
+import tourGuide.response.rest.Attraction;
 
-import gpsUtil.location.Attraction;
 
 public class Position {
 	private Attraction attraction;
 	private Double distanceFromUser;
+	private int rewardPoints;
 	
+	public int getRewardPoints() {
+		return rewardPoints;
+	}
+	public void setRewardPoints(int rewardPoints) {
+		this.rewardPoints = rewardPoints;
+	}
 	public Attraction getAttraction() {
 		return attraction;
 	}
