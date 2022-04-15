@@ -1,0 +1,39 @@
+version: '2'
+
+services:
+
+  reward:
+    image: reward
+    networks:
+      - oc
+    ports:
+      - "9001:9001"
+
+  gps-util:
+    image: gps-util
+    networks:
+      - oc
+    ports:
+      - "9002:9002"
+
+  trip-pricer:
+    image: trip-pricer
+    networks:
+      - oc
+    ports:
+      - "9003:9003"
+
+  tour-guide:
+    image: tour-guide:0.0.1
+    ports:
+      - "8080:8080"
+    networks:
+      - oc
+    depends_on:
+      - reward
+      - gps-util
+      - trip-pricer
+
+networks:
+  oc:
+    driver: bridge

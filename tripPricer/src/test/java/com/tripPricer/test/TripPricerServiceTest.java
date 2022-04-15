@@ -35,7 +35,7 @@ public class TripPricerServiceTest {
 		Integer nightsStay = 5 ;
 		Integer rewardsPoints = 5;
 		
-		List<Provider> providers = tripPricerService.getPrice(apiKey, attractionId, 
+		List<Provider> providers = tripPricerService.getPrice(apiKey, attractionId.toString(), 
 				adults, children, nightsStay, rewardsPoints);
 	
 		assertNotEquals(Collections.EMPTY_LIST, providers.size());

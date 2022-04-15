@@ -92,7 +92,9 @@ public class TourGuideService {
 	}
 
 	public List<User> getAllUsers() {
-		return internalUserMap.values().stream().collect(Collectors.toList());
+		List<User> lUsers = internalUserMap.values().stream().collect(Collectors.toList());
+		//System.out.println(lUsers.size());
+		return lUsers;
 	}
 	
 	public void addUser(User user) {
@@ -103,7 +105,8 @@ public class TourGuideService {
 	
 	public List<Provider> getTripDeals(User user) {
 		int cumulatativeRewardPoints = user.getUserRewards().stream().mapToInt(i -> i.getRewardPoints()).sum();
-		List<Provider> providers = tripPricerProxy.getPrice(tripPricerApiKey, user.getUserId(), user.getUserPreferences().getNumberOfAdults(), 
+		 //user = getUser(user.getUserName());
+		List<Provider> providers = tripPricerProxy.getPrice(tripPricerApiKey, user.getUserId().toString(), user.getUserPreferences().getNumberOfAdults(), 
 				user.getUserPreferences().getNumberOfChildren(), user.getUserPreferences().getTripDuration(), cumulatativeRewardPoints);
 		user.setTripDeals(providers);
 		return providers;
@@ -119,12 +122,12 @@ public class TourGuideService {
 	public List<Attraction> getNearByAttractions(VisitedLocation visitedLocation) {
 		List<Attraction> nearbyAttractions = new ArrayList<>();
 		for(Attraction attraction : gpsUtilProxy.getAttractions()) {
-			if(rewardsService.nearAttraction(visitedLocation,attraction)) {
+			if(rewardsService.nearAttraction(visitedLocation, attraction)) {
 				
 				nearbyAttractions.add(attraction);
-				if(nearbyAttractions.size()==5) {
+				/*if(nearbyAttractions.size()==5) {
 					break;
-				}
+				}*/
 			}
 		}
 		

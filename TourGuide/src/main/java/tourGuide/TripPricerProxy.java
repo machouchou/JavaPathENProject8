@@ -14,7 +14,7 @@ import tourGuide.response.rest.Provider;
 public interface TripPricerProxy {
 	@GetMapping(value = "/getPrice") 
     List<Provider> getPrice(@RequestParam("apiKey") String apiKey,
-    		@RequestParam("attractionId") UUID attractionId,
+    		@RequestParam("attractionId") String attractionId,
     		@RequestParam("adults") int adults,
     		@RequestParam("children") int children, 
     		@RequestParam("nightStay") int nightsStay,

@@ -22,13 +22,12 @@ public class TripPricerService {
 
 	}
 	
-	public List<Provider> getPrice(String apiKey, UUID attractionId, 
+	public List<Provider> getPrice(String apiKey, String attractionId, 
 									int adults, int children, 
 									int nightsStay, int rewardsPoints) {
 		
 		logger.debug("Trip Pricer Service");
-		
-	    return this.tripPricer.getPrice(apiKey, UUID.randomUUID(), adults, children, nightsStay, rewardsPoints);
+	    return this.tripPricer.getPrice(apiKey, UUID.fromString(attractionId), adults, children, nightsStay, rewardsPoints);
 	}
 	
 	public String getProviderName(String apiKey, int adults) {

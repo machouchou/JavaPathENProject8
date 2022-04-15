@@ -18,7 +18,7 @@ public class TripPricerController {
 	
 	@GetMapping("/getPrice") 
     public List<Provider> getPrice(@RequestParam String apiKey,
-    		@RequestParam UUID attractionId,
+    		@RequestParam String attractionId,
     		@RequestParam int adults,
     		@RequestParam int children, 
     		@RequestParam int nightsStay,

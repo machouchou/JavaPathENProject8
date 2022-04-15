@@ -1,6 +1,7 @@
 package tourGuide;
 
 import java.util.List;
+import java.util.UUID;
 import java.util.concurrent.ExecutionException;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -36,6 +37,10 @@ public class TourGuideController {
         return "Greetings from TourGuide!";
     }
     
+    @RequestMapping("/users") 
+    public List<User> getAllUser() {
+    	return tourGuideService.getAllUsers();
+    }
     @RequestMapping("/getLocation") 
     public String getLocation(@RequestParam String userName) throws ExecutionException, InterruptedException {
     	VisitedLocation visitedLocation = tourGuideService.getUserLocation(getUser(userName));
