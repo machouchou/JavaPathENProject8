@@ -18,6 +18,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 
+import tourGuide.dto.UserFiveNearAttracDto;
 import tourGuide.helper.InternalTestHelper;
 import tourGuide.response.rest.Attraction;
 import tourGuide.response.rest.Provider;
@@ -112,7 +113,7 @@ public class TestTourGuideService {
 		
 		assertEquals(user.getUserId(), visitedLocation.getUserId());
 	}
-	/*
+	
 	// Not yet implemented
 	@Test
 	public void getNearbyAttractions() {
@@ -123,12 +124,12 @@ public class TestTourGuideService {
 		User user = new User(UUID.randomUUID(), "jon", "000", "jon@tourGuide.com");
 		VisitedLocation visitedLocation = tourGuideService.trackUserLocation(user);
 		
-		List<Attraction> attractions = tourGuideService.getNearByAttractions(visitedLocation);
+		List<UserFiveNearAttracDto> nearbyAttractions = tourGuideService.getNearByAttractions(user);
 		
 		tourGuideService.tracker.stopTracking();
 		
-		assertEquals(5, attractions.size());
-	}*/
+		assertEquals(5, nearbyAttractions.size());
+	}
 	
 	@Test
 	public void getTripDeals() {
@@ -137,13 +138,12 @@ public class TestTourGuideService {
 		TourGuideService tourGuideService = new TourGuideService(gpsUtilProxy, rewardsService, rewardProxy, tripPricerProxy);
 		
 		User user = new User(UUID.randomUUID(), "jon", "000", "jon@tourGuide.com");
-		System.out.println(UUID.randomUUID().toString());		//User user = tourGuideService.getAllUsers().get(0);
-		//UUID attractionId = UUID.randomUUID();
+		//System.out.println(UUID.randomUUID().toString());		
 		List<Provider> providers = tourGuideService.getTripDeals(user);
 		
 		tourGuideService.tracker.stopTracking();
 		
-		assertEquals(10, providers.size());
+		assertEquals(5, providers.size());
 	}
 	
 }

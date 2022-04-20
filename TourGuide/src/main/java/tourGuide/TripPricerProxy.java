@@ -17,7 +17,7 @@ public interface TripPricerProxy {
     		@RequestParam("attractionId") String attractionId,
     		@RequestParam("adults") int adults,
     		@RequestParam("children") int children, 
-    		@RequestParam("nightStay") int nightsStay,
+    		@RequestParam("nightsStay") int nightsStay,
     		@RequestParam("rewardsPoints") int rewardsPoints );
 
 }

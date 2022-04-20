@@ -128,7 +128,7 @@ public class TestPerformance {
 	@Test
 	public void highVolumeGetRewards() throws ExecutionException, InterruptedException {
 		Locale.setDefault(new Locale("en", "US", "WIN"));
-		//GpsUtilProxy gpsUtil = new GpsUtilProxy();
+		
 		RewardsService rewardsService = new RewardsService(gpsUtilProxy, rewardProxy);
 
 		// Users should be incremented up to 100,000, and test finishes within 20 minutes

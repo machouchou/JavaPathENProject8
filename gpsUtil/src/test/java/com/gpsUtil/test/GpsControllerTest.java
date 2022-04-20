@@ -1,5 +1,6 @@
 package com.gpsUtil.test;
 
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,7 +14,9 @@ import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilde
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+import java.util.Locale;
 import java.util.UUID;
+import java.util.concurrent.Executors;
 
 import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
 
@@ -30,6 +33,11 @@ public class GpsControllerTest {
 	
 	@Autowired
     ObjectMapper mapper;
+	
+	@Before
+	  public void setUp() {
+	    Locale.setDefault(new Locale("en", "US", "WIN"));
+	}
 
 	@Test
 	public void getAttractions() throws Exception {

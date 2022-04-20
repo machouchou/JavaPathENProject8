@@ -36,7 +36,6 @@ public class TestRewardsService {
 	
 	@Before
 	  public void setUp() {
-	   // executor = Executors.newFixedThreadPool(100);
 	    Locale.setDefault(new Locale("en", "US", "WIN"));
 	}
 
@@ -46,8 +45,7 @@ public class TestRewardsService {
 
 		InternalTestHelper.setInternalUserNumber(0);
 		TourGuideService tourGuideService = new TourGuideService(gpsUtilProxy, rewardsService, rewardProxy, tripPricerProxy);
-		//List<Attraction> attractions = gpsUtilProxy.getAttractions();
-		//System.out.println(gpsUtilProxy);
+		
 		User user = new User(UUID.randomUUID(), "jon", "000", "jon@tourGuide.com");
 		Attraction attraction = gpsUtilProxy.getAttractions().get(0);
 		VisitedLocation visitedLocation = new VisitedLocation();

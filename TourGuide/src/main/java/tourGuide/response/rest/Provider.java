@@ -7,9 +7,17 @@ public class Provider {
 	  
 	  private double price;
 	  
-	  private UUID tripId;
+	  private String tripId;
 	  
-	  public Provider(UUID tripId, String name, double price) {
+	  
+	  
+	  public Provider() {
+		  this.name = "";
+			this.tripId = "";
+			this.price = 0;
+	}
+
+	public Provider(String tripId, String name, double price) {
 	    this.name = name;
 	    this.tripId = tripId;
 	    this.price = price;
@@ -31,16 +39,13 @@ public class Provider {
 		this.price = price;
 	}
 
-	public UUID getTripId() {
+	public String getTripId() {
 		return tripId;
 	}
 
-	public void setTripId(UUID tripId) {
+	public void setTripId(String tripId) {
 		this.tripId = tripId;
 	}
 
-	
-	  
-	  
 
 }

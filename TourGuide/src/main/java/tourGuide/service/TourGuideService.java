@@ -20,10 +20,12 @@ import org.springframework.stereotype.Service;
 import tourGuide.GpsUtilProxy;
 import tourGuide.RewardProxy;
 import tourGuide.TripPricerProxy;
+import tourGuide.dto.UserFiveNearAttracDto;
 import tourGuide.dto.UserPreferenceDto;
 import tourGuide.exception.UserPreferenceException;
 import tourGuide.helper.InternalTestHelper;
 import tourGuide.response.rest.Attraction;
+import tourGuide.response.rest.CurrentLocation;
 import tourGuide.response.rest.Location;
 import tourGuide.response.rest.Provider;
 import tourGuide.response.rest.VisitedLocation;
@@ -109,6 +111,7 @@ public class TourGuideService {
 		List<Provider> providers = tripPricerProxy.getPrice(tripPricerApiKey, user.getUserId().toString(), user.getUserPreferences().getNumberOfAdults(), 
 				user.getUserPreferences().getNumberOfChildren(), user.getUserPreferences().getTripDuration(), cumulatativeRewardPoints);
 		user.setTripDeals(providers);
+		System.out.println(providers.size());
 		return providers;
 	}
 	
@@ -119,19 +122,8 @@ public class TourGuideService {
 		return visitedLocation;
 	}
 
-	public List<Attraction> getNearByAttractions(VisitedLocation visitedLocation) {
-		List<Attraction> nearbyAttractions = new ArrayList<>();
-		for(Attraction attraction : gpsUtilProxy.getAttractions()) {
-			if(rewardsService.nearAttraction(visitedLocation, attraction)) {
-				
-				nearbyAttractions.add(attraction);
-				/*if(nearbyAttractions.size()==5) {
-					break;
-				}*/
-			}
-		}
-		
-		return nearbyAttractions;
+	public List<UserFiveNearAttracDto> getNearByAttractions(User user) {
+		return rewardsService.getFiveNearAttractions(user);
 	}
 
 	
@@ -173,6 +165,13 @@ public class TourGuideService {
 			visitedLocation.setTimeVisited(getRandomTime());
 			user.addToVisitedLocations(visitedLocation);
 		});
+		
+	}
+	
+	private List<Location> getAllCurrentLocations(User user) {
+		 generateUserLocationHistory(user);
+		 return null;
+		
 	}
 	
 	private double generateRandomLongitude() {
@@ -191,5 +190,20 @@ public class TourGuideService {
 		LocalDateTime localDateTime = LocalDateTime.now().minusDays(new Random().nextInt(30));
 	    return Date.from(localDateTime.toInstant(ZoneOffset.UTC));
 	}
+	
+		public List<CurrentLocation> getAllCurrentLocations(List<User> lUser) {
+	        List<CurrentLocation> getAllCurrentLocations = new ArrayList<>();
+
+	        for (int i = 0; i < lUser.size(); i++) {
+	            Location userLocation = new Location(lUser.get(i).getLastVisitedLocation().getLocation().longitude,
+	                    lUser.get(i).getLastVisitedLocation().getLocation().latitude);
+	            UUID uuid = lUser.get(i).getUserId();
+
+	            CurrentLocation userCurrentLocation = new CurrentLocation(uuid, userLocation);
+	            getAllCurrentLocations.add(userCurrentLocation);
+	        }
+	        System.out.println(getAllCurrentLocations);
+	        return getAllCurrentLocations;
+	    }
 	
 }

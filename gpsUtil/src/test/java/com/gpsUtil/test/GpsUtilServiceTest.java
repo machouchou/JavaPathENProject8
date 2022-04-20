@@ -3,7 +3,10 @@ package com.gpsUtil.test;
 import static org.junit.Assert.assertEquals;
 
 import java.util.List;
+import java.util.Locale;
+import java.util.concurrent.Executors;
 
+import org.junit.Before;
 import org.junit.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 
@@ -20,6 +23,11 @@ public class GpsUtilServiceTest {
 	public GpsUtilServiceTest() {
 		this.gpsUtilService = new GpsUtilService(new GpsUtil());
 
+	}
+	
+	@Before
+	  public void setUp() {
+	    Locale.setDefault(new Locale("en", "US", "WIN"));
 	}
 	
 	@Test

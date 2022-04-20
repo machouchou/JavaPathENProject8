@@ -66,7 +66,8 @@ public class RewardsService {
 	}
 	
 	public boolean nearAttraction(VisitedLocation visitedLocation, Attraction attraction) {
-		return getDistance(attraction, visitedLocation.getLocation()) > proximityBuffer ? false : true;
+		boolean dist = getDistance(attraction, visitedLocation.getLocation()) > proximityBuffer ? false : true;
+		return dist;
 	}
 	
 	private int getRewardPoints(Attraction attraction, User user) {

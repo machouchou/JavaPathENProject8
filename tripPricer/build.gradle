@@ -52,6 +52,15 @@ jacocoTestReport {
         csv.enabled false
         html.destination file("${buildDir}/jacocoHtml")
     }
+    afterEvaluate {
+        classDirectories = files(classDirectories.files.collect {
+            fileTree(dir: it,
+                    exclude: [
+                              'com/tripPricer/dto/*.*',
+                              ])
+        })
+    }
+    
 }
 
 test.finalizedBy jacocoTestReport
@@ -63,7 +72,6 @@ jacocoTestCoverageVerification {
       limit {
         counter = 'LINE'
         value = 'COVEREDRATIO'
-        minimum = 0.5
       }
     }
   }
