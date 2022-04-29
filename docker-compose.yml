@@ -3,28 +3,28 @@ version: '2'
 services:
 
   reward:
-    image: reward:1.0.0
+    image: reward:1.0.3
     networks:
       - oc
     ports:
       - "9001:9001"
 
   gps-util:
-    image: gps-util:1.0.0
+    image: gps-util:1.0.3
     networks:
       - oc
     ports:
       - "9002:9002"
 
   trip-pricer:
-    image: trip-pricer:1.0.0
+    image: trip-pricer:1.0.3
     networks:
       - oc
     ports:
       - "9003:9003"
 
   tour-guide:
-    image: tour-guide:1.0.0
+    image: tour-guide:1.0.3
     ports:
       - "8080:8080"
     networks:
