@@ -69,15 +69,6 @@ public class TourGuideController {
       	return JsonStream.serialize(rewardsService.getFiveNearAttractions(user));
     }
     
-    
-    @GetMapping("/getFiveAttractions") 
-    public String getFiveAttractions(@RequestParam String userName) throws ExecutionException, InterruptedException {
-    	//VisitedLocation visitedLocation = tourGuideService.getUserLocation(getUser(userName));
-    	//User user = new User(UUID.randomUUID(), "internalUser1", "111", "user1@TG.com");
-    	User user = tourGuideService.getInternalUserMap().get(userName);
-    	return JsonStream.serialize(rewardsService.getDistanceBetweenUserAndAttraction(user));
-    }
-    
     @RequestMapping("/getRewards") 
     public String getRewards(@RequestParam String userName) {
     	return JsonStream.serialize(tourGuideService.getUserRewards(getUser(userName)));

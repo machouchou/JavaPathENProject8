@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import tourGuide.response.rest.Attraction;
 import tourGuide.response.rest.VisitedLocation;
 
-@FeignClient(name = "gpsUtil", url = "localhost:9002")
+@FeignClient(name = "gpsUtil", url = "gps-util:9002")
 public interface GpsUtilProxy {
 	
 	@GetMapping(value = "/attractions")

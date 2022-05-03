@@ -107,11 +107,9 @@ public class TourGuideService {
 	
 	public List<Provider> getTripDeals(User user) {
 		int cumulatativeRewardPoints = user.getUserRewards().stream().mapToInt(i -> i.getRewardPoints()).sum();
-		 //user = getUser(user.getUserName());
 		List<Provider> providers = tripPricerProxy.getPrice(tripPricerApiKey, user.getUserId().toString(), user.getUserPreferences().getNumberOfAdults(), 
 				user.getUserPreferences().getNumberOfChildren(), user.getUserPreferences().getTripDuration(), cumulatativeRewardPoints);
 		user.setTripDeals(providers);
-		System.out.println(providers.size());
 		return providers;
 	}
 	
@@ -146,7 +144,6 @@ public class TourGuideService {
 	private void initializeInternalUsers() {
 		IntStream.range(0, InternalTestHelper.getInternalUserNumber()).forEach(i -> {
 			String userName = "internalUser" + i;
-			//System.out.println(userName);
 			String phone = "000";
 			String email = userName + "@tourGuide.com";
 			User user = new User(UUID.randomUUID(), userName, phone, email);
@@ -192,7 +189,7 @@ public class TourGuideService {
 	}
 	
 		public List<CurrentLocation> getAllCurrentLocations(List<User> lUser) {
-	        List<CurrentLocation> getAllCurrentLocations = new ArrayList<>();
+	        List<CurrentLocation> allCurrentLocations = new ArrayList<>();
 
 	        for (int i = 0; i < lUser.size(); i++) {
 	            Location userLocation = new Location(lUser.get(i).getLastVisitedLocation().getLocation().longitude,
@@ -200,10 +197,9 @@ public class TourGuideService {
 	            UUID uuid = lUser.get(i).getUserId();
 
 	            CurrentLocation userCurrentLocation = new CurrentLocation(uuid, userLocation);
-	            getAllCurrentLocations.add(userCurrentLocation);
+	            allCurrentLocations.add(userCurrentLocation);
 	        }
-	        System.out.println(getAllCurrentLocations);
-	        return getAllCurrentLocations;
+	        return allCurrentLocations;
 	    }
 	
 }

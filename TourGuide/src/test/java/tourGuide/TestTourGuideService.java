@@ -1,8 +1,8 @@
 package tourGuide;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
@@ -21,6 +21,7 @@ import org.springframework.test.context.junit4.SpringRunner;
 import tourGuide.dto.UserFiveNearAttracDto;
 import tourGuide.helper.InternalTestHelper;
 import tourGuide.response.rest.Attraction;
+import tourGuide.response.rest.CurrentLocation;
 import tourGuide.response.rest.Provider;
 import tourGuide.response.rest.VisitedLocation;
 import tourGuide.service.RewardsService;
@@ -38,7 +39,10 @@ public class TestTourGuideService {
 	@Autowired
 	TripPricerProxy tripPricerProxy;
 	
-	List<Attraction> attractions = new ArrayList();
+	@Autowired
+	TourGuideService tourGuideService;
+	
+	List<Attraction> attractions = new ArrayList<Attraction>();
 	Executor executor;
 	
 	@Before
@@ -114,7 +118,6 @@ public class TestTourGuideService {
 		assertEquals(user.getUserId(), visitedLocation.getUserId());
 	}
 	
-	// Not yet implemented
 	@Test
 	public void getNearbyAttractions() {
 		RewardsService rewardsService = new RewardsService(gpsUtilProxy, rewardProxy);
@@ -138,7 +141,6 @@ public class TestTourGuideService {
 		TourGuideService tourGuideService = new TourGuideService(gpsUtilProxy, rewardsService, rewardProxy, tripPricerProxy);
 		
 		User user = new User(UUID.randomUUID(), "jon", "000", "jon@tourGuide.com");
-		//System.out.println(UUID.randomUUID().toString());		
 		List<Provider> providers = tourGuideService.getTripDeals(user);
 		
 		tourGuideService.tracker.stopTracking();
@@ -146,4 +148,23 @@ public class TestTourGuideService {
 		assertEquals(5, providers.size());
 	}
 	
+	@Test
+	public void getAllCurrentLocations() {
+		//ARRANGE:
+		User user1 = tourGuideService.getInternalUserMap().get("internalUser0");
+		User user2 = tourGuideService.getInternalUserMap().get("internalUser1");
+		
+		List<User> lUser = new ArrayList<User>();
+		lUser.add(user1);
+		lUser.add(user2);
+		
+		//ACT:
+		List<CurrentLocation> lResult = tourGuideService.getAllCurrentLocations(lUser);
+		
+		//ASSERT:
+		assertEquals(2, lResult.size());
+		assertNotNull(lResult.get(0).getUserId());
+		assertNotNull(lResult.get(1).getUserId());
+		
+	}
 }

@@ -144,7 +144,6 @@ public class RewardsService {
 		        return P1.getDistanceFromUser().compareTo(P2.getDistanceFromUser());
 		    }
 		}); 
-		System.out.println(lUserFiveNearAttracDto);
 		return lUserFiveNearAttracDto.stream().limit(5).collect(Collectors.toList());
 	}
 	

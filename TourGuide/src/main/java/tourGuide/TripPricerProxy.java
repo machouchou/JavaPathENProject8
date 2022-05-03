@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import tourGuide.response.rest.Provider;
 
 
-@FeignClient(name = "tripPricer", url = "localhost:9003")
+@FeignClient(name = "tripPricer", url = "trip-pricer:9003")
 public interface TripPricerProxy {
 	@GetMapping(value = "/getPrice") 
     List<Provider> getPrice(@RequestParam("apiKey") String apiKey,
